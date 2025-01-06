@@ -8,8 +8,8 @@ file_path_usuarios = 'usuarios.csv'
 peliculas_df = pd.read_csv(file_path_peliculas)
 usuarios_df = pd.read_csv(file_path_usuarios)
 
-def votaciones(NombrePelicula, puntuacion, peliculas_df, usuarios_df, username):
-    # Verificar si el usuario ya existe en el archivo 'usuarios.csv'
+
+def votaciones(NombrePelicula, puntuacion, usuarios_df, username):
     if username in usuarios_df["Nombre de usuario"].values:
         # Si el usuario ya tiene una fila, obtenemos las votaciones actuales
         usuario_row = usuarios_df[usuarios_df["Nombre de usuario"] == username].iloc[0]
@@ -30,20 +30,22 @@ def votaciones(NombrePelicula, puntuacion, peliculas_df, usuarios_df, username):
             # Si no está, agregamos la nueva película y la puntuación
             votaciones_usuario.append({"title": NombrePelicula, "rating": puntuacion})
 
-        # Actualizamos las votaciones del usuario en el DataFrame de usuarios
+        # Actualizamos solo la columna 'votaciones' del usuario
         usuarios_df.loc[usuarios_df["Nombre de usuario"] == username, "votaciones"] = str(votaciones_usuario)
     else:
         # Si el usuario no existe, agregamos una nueva fila para el usuario
         nuevas_votaciones = [{"title": NombrePelicula, "rating": puntuacion}]
-        # Crear un DataFrame con los nuevos datos para concatenar
         nuevas_filas = pd.DataFrame([{"Nombre de usuario": username, "votaciones": str(nuevas_votaciones)}])
 
         # Concatenar la nueva fila al DataFrame de usuarios
         usuarios_df = pd.concat([usuarios_df, nuevas_filas], ignore_index=True)
 
-    # Guardamos el DataFrame actualizado de usuarios en el archivo CSV
+    # Asegurarse de que las columnas no numéricas (como la contraseña) no se conviertan a números
+    usuarios_df["Contraseña"] = usuarios_df["Contraseña"].astype(str)
+
+    # Guardamos el DataFrame actualizado en el archivo CSV
     usuarios_df.to_csv(file_path_usuarios, index=False)
     print(f"Votación guardada para el usuario '{username}' para la película '{NombrePelicula}' con puntuación {puntuacion}.")
 
 # Ejemplo de uso:
-votaciones("Black Panter", 5, peliculas_df, usuarios_df, "Miguel")
+votaciones("Titanic", 5, usuarios_df, "Miguel")
