@@ -1,4 +1,4 @@
-Nombre de usuario,Contraseña
-Miguel,1234
-Alejandro,2345
-Pedro,2002
+Nombre de usuario,Contraseña,votaciones
+Alejandro,2345,
+Pedro,2002,
+Miguel,1234,"[{'title': 'Avengers: Endgame', 'rating': 5}, {'title': 'Black Panter', 'rating': 5}, {'title': 'Titanic', 'rating': 5}]"

@@ -3,6 +3,7 @@ from vista.Vista_principal import Vista_principal
 from modelo.Modelo_peliculas import Modelo_peliculas
 from controlador.Controlador_sinopsis import Controlador_sinopsis
 
+
 class Controlador_peliculas:
     def __init__(self, app):
         self.app = app
@@ -10,7 +11,10 @@ class Controlador_peliculas:
         self.principal_view = Vista_principal()
 
         self.principal_view.conectar_busqueda(self.buscar_peliculas)
+
         self.principal_view.conectar_ver_sinopsis(self.ver_sinopsis)
+
+        self.principal_view.conectar_votacion(self.votaciones)
         self.cargar_peliculas_azar()
 
     def buscar_peliculas(self):
@@ -22,6 +26,7 @@ class Controlador_peliculas:
         peliculas = self.peliculas_model.peliculas_azar()
         self.principal_view.mostrar_peliculas_azar(peliculas)
 
+
     def ver_sinopsis(self):
         nombre_pelicula = self.principal_view.selected_movie_input.text()
         pelicula = self.peliculas_model.sacar_peliculas(nombre_pelicula)
@@ -31,6 +36,15 @@ class Controlador_peliculas:
             pelicula = pelicula.iloc[0]
             self.sinopsis_controller = Controlador_sinopsis(self.app, pelicula)
             self.sinopsis_controller.run()
+
+    def votaciones(self):
+        nombre_pelicula = self.principal_view.pelicula_input.text()
+        puntuacion = int(self.principal_view.puntuacion_input.text())
+        username = self.principal_view.username_input.text()
+
+        self.peliculas_model.votaciones(nombre_pelicula, puntuacion, username)
+        self.principal_view.mostrar_mensaje(f"Votación guardada para {username} en la película '{nombre_pelicula}'")
+
 
     def run(self):
         self.principal_view.show()
