@@ -1,14 +1,10 @@
 
 import pandas as pd
-import ast
 
 class Modelo_peliculas:
-
     def __init__(self):
-        self.file_path_peliculas = 'peliculas_final.csv'
-        self.file_path_usuarios = 'usuarios.csv'
-        self.peliculas_df = pd.read_csv(self.file_path_peliculas)
-        self.usuarios_df = pd.read_csv(self.file_path_usuarios)
+        self.file_path = 'peliculas_final.csv'
+        self.peliculas_df = pd.read_csv(self.file_path)
 
     def sacar_peliculas(self, nombre_pelicula):
         resultado = self.peliculas_df[self.peliculas_df['title'].str.contains(nombre_pelicula, case=False, na=False)]
@@ -21,7 +17,7 @@ class Modelo_peliculas:
         return datos_relevantes
 
     def peliculas_azar(self):
-        muestra = self.peliculas_df.sample(n=12, random_state=123)
+        muestra = self.peliculas_df.sample(n=12)
         return muestra[['title']].values.tolist()
 
     def votaciones(self, NombrePelicula, puntuacion, username):
