@@ -9,6 +9,8 @@ class Vista_principal(QMainWindow):
     - Un campo de búsqueda para el título de la película.
     - Un botón para realizar la búsqueda.
     - Un área para mostrar los resultados de la búsqueda.
+    - Un campo de texto editable para el nombre de la película seleccionada.
+    - Un botón para ver la sinopsis de la película seleccionada.
     """
 
     def __init__(self):
@@ -19,6 +21,39 @@ class Vista_principal(QMainWindow):
         super().__init__()
         self.setWindowTitle("Buscador de Películas")
         self.resize(1200, 800)
+
+        # Aplicar el estilo CSS
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #2E86C1;  /* Fondo azul */
+            }
+            QLabel {
+                color: white;              /* Texto blanco */
+            }
+            QLineEdit {
+                background-color: #F0F0F0; /* Fondo gris claro */
+                border: 1px solid #DADADA;
+                border-radius: 5px;
+                padding: 10px;
+                font-size: 24px;           /* Fuente más grande */
+            }
+            QPushButton {
+                background-color: #3498DB; /* Azul para botones */
+                color: white;
+                font-size: 24px;           /* Fuente más grande */
+                padding: 15px;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #2980B9; /* Azul más oscuro al pasar el mouse */
+            }
+            QListWidget {
+                background-color: #F0F0F0; /* Fondo gris claro */
+                border: 1px solid #DADADA;
+                border-radius: 5px;
+                font-size: 24px;           /* Fuente más grande */
+            }
+        """)
 
         # Centrar la ventana en la pantalla
         self.center_window()
@@ -32,25 +67,31 @@ class Vista_principal(QMainWindow):
 
         # Título
         self.label = QLabel("Buscador de Películas")
-        self.label.setStyleSheet("font-size: 36px; font-weight: bold;")
         self.label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(self.label)
 
         # Campo de búsqueda
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Ingrese el título de la película...")
-        self.search_input.setStyleSheet("font-size: 18px; padding: 10px;")
         self.layout.addWidget(self.search_input)
 
         # Botón de búsqueda
         self.search_button = QPushButton("Buscar")
-        self.search_button.setStyleSheet("font-size: 18px; padding: 10px;")
         self.layout.addWidget(self.search_button)
 
         # Lista de resultados
         self.results_list = QListWidget()
-        self.results_list.setStyleSheet("font-size: 18px;")
         self.layout.addWidget(self.results_list)
+        self.results_list.itemClicked.connect(self.actualizar_pelicula_seleccionada)
+
+        # Campo de texto editable para el nombre de la película seleccionada
+        self.selected_movie_input = QLineEdit()
+        self.selected_movie_input.setPlaceholderText("Película seleccionada...")
+        self.layout.addWidget(self.selected_movie_input)
+
+        # Botón para ver la sinopsis
+        self.view_synopsis_button = QPushButton("Ver Sinopsis")
+        self.layout.addWidget(self.view_synopsis_button)
 
     def center_window(self):
         """
@@ -77,6 +118,12 @@ class Vista_principal(QMainWindow):
         """
         self.search_button.clicked.connect(funcion)
 
+    def conectar_ver_sinopsis(self, funcion):
+        """
+        Conecta el botón de ver sinopsis con la función proporcionada.
+        """
+        self.view_synopsis_button.clicked.connect(funcion)
+
     def mostrar_resultados(self, resultados):
         """
         Muestra los resultados de la búsqueda en la lista de resultados.
@@ -86,7 +133,7 @@ class Vista_principal(QMainWindow):
             self.show_alert(resultados)
         else:
             for _, row in resultados.iterrows():
-                item_text = f"{row['title']} - {row['synopsis']}"
+                item_text = f"{row['title']}"
                 item = QListWidgetItem(item_text)
                 self.results_list.addItem(item)
 
@@ -99,3 +146,9 @@ class Vista_principal(QMainWindow):
             item_text = f"{pelicula[0]}"
             item = QListWidgetItem(item_text)
             self.results_list.addItem(item)
+
+    def actualizar_pelicula_seleccionada(self, item):
+        """
+        Actualiza el campo de texto editable con el nombre de la película seleccionada.
+        """
+        self.selected_movie_input.setText(item.text().split(" - ")[0])

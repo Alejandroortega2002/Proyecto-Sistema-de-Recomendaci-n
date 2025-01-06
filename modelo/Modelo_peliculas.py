@@ -18,4 +18,4 @@ class Modelo_peliculas:
 
     def peliculas_azar(self):
         muestra = self.peliculas_df.sample(n=12, random_state=123)
-        return muestra[['title', 'Imagen']].values.tolist()
+        return muestra[['title']].values.tolist()
