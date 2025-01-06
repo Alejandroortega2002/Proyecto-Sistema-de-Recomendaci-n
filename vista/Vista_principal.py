@@ -2,20 +2,34 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButt
 from PyQt5.QtCore import Qt
 
 class Vista_principal(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Pantalla Inicial")
-        self.setGeometry(100, 100, 600, 400)
+    """
+    Clase que define la interfaz gráfica de la pantalla inicial o menú principal de la aplicación.
 
-        # Widget central
+    Esta clase hereda de QMainWindow y crea una ventana con:
+    - Un título.
+    - Tres botones de opciones para acceder a diferentes funcionalidades de la aplicación.
+    """
+
+    def __init__(self):
+        """
+        Constructor de la clase Vista_principal.
+        Inicializa los elementos de la interfaz gráfica y su disposición.
+        """
+        super().__init__()
+
+        # Configuración de la ventana principal
+        self.setWindowTitle("Pantalla Inicial")  # Título de la ventana
+        self.setGeometry(100, 100, 600, 400)  # Tamaño y posición de la ventana
+
+        # Widget central para contener los elementos de la interfaz
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
 
-        # Layout principal
+        # Layout principal para organizar los elementos en vertical
         self.layout = QVBoxLayout(self.central_widget)
-        self.layout.setAlignment(Qt.AlignCenter)
+        self.layout.setAlignment(Qt.AlignCenter)  # Centrar los elementos en la ventana
 
-        # Estilo general
+        # Estilo general de la ventana y sus elementos
         self.setStyleSheet("""
             QWidget {
                 background-color: #2E86C1;  /* Fondo azul */
@@ -35,18 +49,21 @@ class Vista_principal(QMainWindow):
             }
         """)
 
-        # Título
+        # Crear los elementos de la interfaz
+        # Título de la pantalla principal
         self.label = QLabel("Menú Principal")
-        self.label.setStyleSheet("font-size: 24px; font-weight: bold;")
-        self.label.setAlignment(Qt.AlignCenter)
-        self.layout.addWidget(self.label)
+        self.label.setStyleSheet("font-size: 24px; font-weight: bold;")  # Estilo del texto
+        self.label.setAlignment(Qt.AlignCenter)  # Alinear el texto en el centro
+        self.layout.addWidget(self.label)  # Agregar el título al layout
 
-        # Botones del menú
+        # Botón de Opción 1
         self.option1_button = QPushButton("Opción 1")
-        self.layout.addWidget(self.option1_button)
+        self.layout.addWidget(self.option1_button)  # Agregar el botón al layout
 
+        # Botón de Opción 2
         self.option2_button = QPushButton("Opción 2")
-        self.layout.addWidget(self.option2_button)
+        self.layout.addWidget(self.option2_button)  # Agregar el botón al layout
 
+        # Botón de Opción 3
         self.option3_button = QPushButton("Opción 3")
-        self.layout.addWidget(self.option3_button)
+        self.layout.addWidget(self.option3_button)  # Agregar el botón al layout
