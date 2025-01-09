@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QTextEdit, QDesktopWidget
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QTextEdit, QDesktopWidget, QHBoxLayout, QGridLayout
 from PyQt5.QtCore import Qt
 
 class Vista_sinopsis(QMainWindow):
@@ -59,12 +59,17 @@ class Vista_sinopsis(QMainWindow):
         # Título de la película
         self.title_label = QLabel("Título de la Película")
         self.title_label.setAlignment(Qt.AlignCenter)
+        self.title_label.setStyleSheet("font-size: 36px; font-weight: bold;")
         self.layout.addWidget(self.title_label)
 
         # Sinopsis de la película
         self.synopsis_text = QTextEdit()
         self.synopsis_text.setReadOnly(True)
         self.layout.addWidget(self.synopsis_text)
+
+        # Información detallada de la película
+        self.info_layout = QGridLayout()
+        self.layout.addLayout(self.info_layout)
 
         # Botón para volver a la pantalla principal
         self.back_button = QPushButton("Volver")
@@ -85,9 +90,35 @@ class Vista_sinopsis(QMainWindow):
         """
         self.back_button.clicked.connect(funcion)
 
-    def mostrar_informacion_pelicula(self, titulo, sinopsis):
+    def mostrar_informacion_pelicula(self, pelicula):
         """
         Muestra la información detallada de la película.
         """
-        self.title_label.setText(titulo)
-        self.synopsis_text.setText(sinopsis)
+        self.title_label.setText(pelicula['title'])
+        self.synopsis_text.setText(pelicula['synopsis'])
+
+        # Limpiar el layout de información detallada
+        for i in reversed(range(self.info_layout.count())):
+            widget = self.info_layout.itemAt(i).widget()
+            if widget is not None:
+                widget.deleteLater()
+
+        # Añadir la información detallada de la película
+        info_items = [
+            ("Año", pelicula.get('year', 'No disponible')),
+            ("Critic Score", pelicula.get('critic_score', 'No disponible')),
+            ("People Score", pelicula.get('people_score', 'No disponible')),
+            ("Idioma Original", pelicula.get('original_language', 'No disponible')),
+            ("Director", pelicula.get('director', 'No disponible')),
+            ("Fecha de Estreno (Streaming)", pelicula.get('release_date_(streaming)', 'No disponible')),
+            ("Duración", pelicula.get('runtime', 'No disponible')),
+            ("Compañía de Producción", pelicula.get('production_co', 'No disponible')),
+        ]
+
+        for i, (label, value) in enumerate(info_items):
+            label_widget = QLabel(f"{label}:")
+            value_widget = QLabel(str(value))
+            label_widget.setStyleSheet("font-size: 24px; font-weight: bold; color: #FFFFFF;")
+            value_widget.setStyleSheet("font-size: 24px; color: #FFFFFF;")
+            self.info_layout.addWidget(label_widget, i // 2, (i % 2) * 2)
+            self.info_layout.addWidget(value_widget, i // 2, (i % 2) * 2 + 1)

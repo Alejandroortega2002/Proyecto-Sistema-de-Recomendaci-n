@@ -1,24 +1,34 @@
-
 import pandas as pd
+import ast
 
 class Modelo_peliculas:
     def __init__(self):
         self.file_path = 'peliculas_final.csv'
+        self.file_path_usuarios = 'usuarios.csv'  # Asegúrate de tener este archivo
         self.peliculas_df = pd.read_csv(self.file_path)
+        self.usuarios_df = pd.read_csv(self.file_path_usuarios)
 
     def sacar_peliculas(self, nombre_pelicula):
         resultado = self.peliculas_df[self.peliculas_df['title'].str.contains(nombre_pelicula, case=False, na=False)]
         if resultado.empty:
             return f"No se encontró la película: {nombre_pelicula}"
 
-        columnas_necesarias = ['title', 'synopsis', 'people_score', 'critic_score', 'type', 'link']
+        columnas_necesarias = [
+            'title', 'year', 'synopsis', 'critic_score', 'people_score',
+            'consensus', 'total_reviews', 'total_ratings', 'type', 'rating',
+            'genre', 'original_language', 'director', 'producer', 'writer',
+            'release_date_(theaters)', 'release_date_(streaming)',
+            'box_office_(gross_usa)', 'runtime', 'production_co', 'sound_mix',
+            'aspect_ratio', 'view_the_collection', 'crew', 'link', 'Imagen',
+            'votaciones'
+        ]
         datos_relevantes = resultado[columnas_necesarias]
 
         return datos_relevantes
 
     def peliculas_azar(self):
         muestra = self.peliculas_df.sample(n=12)
-        return muestra[['title']].values.tolist()
+        return muestra['title'].tolist()  # Convertir a una lista de cadenas
 
     def votaciones(self, NombrePelicula, puntuacion, username):
         # Comprobar si el usuario ya existe en el DataFrame de usuarios
@@ -53,8 +63,9 @@ class Modelo_peliculas:
             self.usuarios_df = pd.concat([self.usuarios_df, nuevas_filas], ignore_index=True)
 
         # Asegurarse de que las columnas no numéricas (como la contraseña) no se conviertan a números
-        self.usuarios_df["Contraseña"] = self.usuarios_df["Contraseña"].astype(str)
+        if "Contraseña" in self.usuarios_df.columns:
+            self.usuarios_df["Contraseña"] = self.usuarios_df["Contraseña"].astype(str)
 
         # Guardamos el DataFrame actualizado en el archivo CSV
         self.usuarios_df.to_csv(self.file_path_usuarios, index=False)
-        print( f"Votación guardada para el usuario '{username}' para la película '{NombrePelicula}' con puntuación {puntuacion}.")
+        print(f"Votación guardada para el usuario '{username}' para la película '{NombrePelicula}' con puntuación {puntuacion}.")

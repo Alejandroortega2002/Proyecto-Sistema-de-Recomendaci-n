@@ -1,58 +1,24 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QListWidget, QDesktopWidget, QToolBar, QAction
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QListWidget, QMenuBar, QAction, QMainWindow, QMessageBox, QDesktopWidget
 from PyQt5.QtCore import Qt
 
-class Vista_principal(QMainWindow):
+class Vista_votar(QMainWindow):
     """
-    Clase que define la interfaz gráfica para la pantalla principal de la aplicación.
+    Clase que define la interfaz gráfica para votar por una película.
 
     Esta clase hereda de QMainWindow y crea una ventana con:
-    - Un campo de búsqueda para el título de la película.
-    - Un botón para realizar la búsqueda.
+    - Un área para buscar películas.
     - Un área para mostrar los resultados de la búsqueda.
-    - Un campo de texto editable para el nombre de la película seleccionada.
-    - Un botón para ver la sinopsis de la película seleccionada.
+    - Un menú con opciones para navegar a otras vistas.
     """
 
-    def __init__(self, go_to_main_view, go_to_vote_view, go_to_recommendations_view):
+    def __init__(self):
         """
-        Constructor de la clase Vista_principal.
+        Constructor de la clase Vista_votar.
         Inicializa los elementos de la interfaz gráfica y su disposición.
         """
         super().__init__()
-        self.setWindowTitle("Buscador de Películas")
-        self.resize(1200, 800)
-
-        # Crear la barra de herramientas
-        self.toolbar = QToolBar()
-        self.addToolBar(self.toolbar)
-
-        # Aplicar el estilo CSS a la barra de herramientas
-        self.toolbar.setStyleSheet("""
-            QToolBar {
-                background-color: white;
-            }
-            QToolButton {
-                background-color: white;            
-                font-size: 14px;
-                font-weight: bold;
-                color: black;
-            }
-        """)
-
-        # Acción para ir a la vista principal
-        main_view_action = QAction('Vista Principal', self)
-        main_view_action.triggered.connect(go_to_main_view)
-        self.toolbar.addAction(main_view_action)
-
-        # Acción para ir a la vista de votar
-        vote_view_action = QAction('Votar', self)
-        vote_view_action.triggered.connect(go_to_vote_view)
-        self.toolbar.addAction(vote_view_action)
-
-        # Acción para ir a la vista de recomendaciones
-        recommendations_view_action = QAction('Recomendaciones', self)
-        recommendations_view_action.triggered.connect(go_to_recommendations_view)
-        self.toolbar.addAction(recommendations_view_action)
+        self.setWindowTitle("Sistema de Recomendación de Películas - Votar")
+        self.resize(1200, 800)  # Ajustar el tamaño para que coincida con la pantalla principal
 
         # Aplicar el estilo CSS
         self.setStyleSheet("""
@@ -79,12 +45,6 @@ class Vista_principal(QMainWindow):
             QPushButton:hover {
                 background-color: #2980B9; /* Azul más oscuro al pasar el mouse */
             }
-            QListWidget {
-                background-color: #F0F0F0; /* Fondo gris claro */
-                border: 1px solid #DADADA;
-                border-radius: 5px;
-                font-size: 24px;           /* Fuente más grande */
-            }
         """)
 
         # Centrar la ventana en la pantalla
@@ -97,11 +57,16 @@ class Vista_principal(QMainWindow):
         # Layout principal
         self.layout = QVBoxLayout(self.central_widget)
 
-        # Título
-        self.label = QLabel("Buscador de Películas")
-        self.label.setAlignment(Qt.AlignCenter)
-        self.label.setStyleSheet("font-size: 36px; font-weight: bold;")
-        self.layout.addWidget(self.label)
+        # Barra de menú
+        self.menu_bar = QMenuBar(self)
+        self.setMenuBar(self.menu_bar)
+
+        # Menú de navegación
+        self.menu_navegacion = self.menu_bar.addMenu("Navegación")
+
+        # Acción para ir a la vista de votar
+        self.action_votar = QAction("Votar", self)
+        self.menu_navegacion.addAction(self.action_votar)
 
         # Área de búsqueda
         self.search_input = QLineEdit()
@@ -116,9 +81,9 @@ class Vista_principal(QMainWindow):
         self.results_list = QListWidget()
         self.layout.addWidget(self.results_list)
 
-        # Botón para ver la sinopsis
-        self.synopsis_button = QPushButton("Ver Sinopsis")
-        self.layout.addWidget(self.synopsis_button)
+        # Botón para votar
+        self.vote_button = QPushButton("Votar")
+        self.layout.addWidget(self.vote_button)
 
     def center_window(self):
         """
@@ -135,11 +100,11 @@ class Vista_principal(QMainWindow):
         """
         self.search_button.clicked.connect(funcion)
 
-    def conectar_ver_sinopsis(self, funcion):
+    def conectar_votar(self, funcion):
         """
-        Conecta el botón de ver sinopsis con la función proporcionada.
+        Conecta el botón de votar con la función proporcionada.
         """
-        self.synopsis_button.clicked.connect(funcion)
+        self.vote_button.clicked.connect(funcion)
 
     def mostrar_resultados(self, resultados):
         """
@@ -164,9 +129,3 @@ class Vista_principal(QMainWindow):
         alert = QMessageBox()
         alert.setText(mensaje)
         alert.exec_()
-
-    def actualizar_pelicula_seleccionada(self, item):
-        """
-        Actualiza el campo de texto editable con el nombre de la película seleccionada.
-        """
-        self.search_input.setText(item.text().split(" - ")[0])
